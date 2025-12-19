@@ -268,12 +268,17 @@ if (customBackgroundFile) {
     form.append("values", JSON.stringify(operations));
     form.append("cartoon_name", selectedCartoon);
     form.append("background_name", selectedBackground);
-    const response = await fetch("https://huggingface.co/spaces/Kartikey1234/webfilter-3/filter
-", {
+  try {
+    const response = await fetch("https://huggingface.co/spaces/Kartikey1234/webfilter-3/filter", {
         method: "POST",
         body: form
     });
-
+    if (!response.ok) throw new Error("Network response was not OK");
+    const blob = await response.blob();
+    document.getElementById("image").src = URL.createObjectURL(blob);
+} catch (err) {
+    console.error("Fetch error:", err);
+}
     const blob = await response.blob();
     document.getElementById("image").src = URL.createObjectURL(blob);
 });
