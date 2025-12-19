@@ -230,6 +230,19 @@ document.querySelectorAll(".filter-row").forEach(row => {
         });
     }
 });
+// When checkbox is unchecked, reset slider to 0
+document.querySelectorAll("input[type='checkbox'].item").forEach(checkbox => {
+    checkbox.addEventListener("change", () => {
+        const row = checkbox.closest(".filter-row");
+        const slider = row ? row.querySelector("input[type='range']") : null;
+
+        if (slider && !checkbox.checked) {
+            slider.value = 0;
+            const valSpan = document.getElementById(slider.id.replace('Slider','Val'));
+            if (valSpan) valSpan.innerText = '0%';
+        }
+    });
+});
 
 
 document.getElementById("butt").addEventListener("click", async () => {
