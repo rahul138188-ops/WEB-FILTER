@@ -3,7 +3,7 @@ import numpy as np
 from fastapi import FastAPI, File, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
-from seqmodel import processimage
+from .seqmodel import processimage
 import json
 
 app = FastAPI()
