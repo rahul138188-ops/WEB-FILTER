@@ -12,6 +12,12 @@ jobs:
         with:
           fetch-depth: 0
           lfs: true
+      - name: Remove offending binary files
+        # This deletes the images ONLY for this sync so Hugging Face accepts the push
+        run: |
+          rm -f *.jpg
+          rm -f filterproj/*.jpg
+          rm -rf filterproj/share/  # Removes extra system files that might cause errors
       - name: Push to hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
