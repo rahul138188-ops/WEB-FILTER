@@ -21,11 +21,12 @@ jobs:
           rm -rf filterproj/temp
           rm -rf filterproj/pyvenv.cfg
           
-          # 2. Wipe the local Git history to remove all traces of binary files
+          # 2. Wipe the local Git history
           rm -rf .git
           
-          # 3. Re-initialize a fresh, clean repository
+          # 3. Re-initialize a fresh repository and EXPLICITLY name it main
           git init
+          git checkout -b main
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
           git add .
@@ -35,5 +36,5 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          # Use your exact Hugging Face details here
+          # Push the branch we just named 'main' to the remote 'main'
           git push --force https://Kartikey1234:$HF_TOKEN@huggingface.co/spaces/Kartikey1234/image-filter-api main
