@@ -194,22 +194,19 @@ document.querySelectorAll(".filter-row").forEach(row => {
 
     if (checkbox) {
         row.addEventListener("click", e => {
-            // Ignore clicks on the slider itself
-            if (e.target === slider) return;
+    // Ignore clicks on slider OR checkbox itself
+    if (e.target === slider || e.target === checkbox) return;
 
-            // Toggle checkbox
-            checkbox.checked = !checkbox.checked;
-            checkbox.dispatchEvent(new Event('change')); // triggers your existing logic for cartoon/background
+    // Toggle checkbox
+    checkbox.checked = !checkbox.checked;
+    checkbox.dispatchEvent(new Event('change'));
 
-            // Handle slider value without interfering with your slider input listener
-            if (slider) {
-                slider.value = checkbox.checked ? (slider.value > 0 ? slider.value : 50) : 0;
-
-                // Update displayed value
-                const valSpan = document.getElementById(slider.id.replace('Slider','Val'));
-                if (valSpan) valSpan.innerText = slider.value + '%';
-            }
-        });
+    if (slider) {
+        slider.value = checkbox.checked ? (slider.value > 0 ? slider.value : 50) : 0;
+        const valSpan = document.getElementById(slider.id.replace('Slider','Val'));
+        if (valSpan) valSpan.innerText = slider.value + '%';
+    }
+});
     }
 });
 
