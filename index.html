@@ -268,7 +268,7 @@ if (customBackgroundFile) {
     form.append("values", JSON.stringify(operations));
     form.append("cartoon_name", selectedCartoon);
     form.append("background_name", selectedBackground);
-    const response = await fetch("https://kartikey1234-image-filter-api.hf.space/filter", {
+    const response = await fetch("https://kartikey1234-webfilter-3.hf.space/filter", {
         method: "POST",
         body: form
     });
