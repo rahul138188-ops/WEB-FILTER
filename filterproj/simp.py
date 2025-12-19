@@ -16,6 +16,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/")
+async def root():
+    return {"message": "Image Filter API is running!"}
+
 @app.post("/filter")
 async def apply_filter(
     file: UploadFile = File(...),
