@@ -11,14 +11,29 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          lfs: true
-      - name: Remove offending binary files
-        # This deletes the images ONLY for this sync so Hugging Face accepts the push
+      
+      - name: Clean project for Hugging Face
         run: |
-          rm -f *.jpg
-          rm -f filterproj/*.jpg
-          rm -rf filterproj/share/  # Removes extra system files that might cause errors
+          # 1. Physically remove all images and system files
+          rm -f *.jpg *.jpeg *.png
+          rm -f filterproj/*.jpg filterproj/*.jpeg
+          rm -rf filterproj/share/
+          rm -rf filterproj/temp
+          rm -rf filterproj/pyvenv.cfg
+          
+          # 2. Wipe the local Git history to remove all traces of binary files
+          rm -rf .git
+          
+          # 3. Re-initialize a fresh, clean repository
+          git init
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git add .
+          git commit -m "Clean sync to Hugging Face"
+
       - name: Push to hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: git push --force https://Kartikey1234:$HF_TOKEN@huggingface.co/spaces/Kartikey1234/image-filter-api main
+        run: |
+          # Use your exact Hugging Face details here
+          git push --force https://Kartikey1234:$HF_TOKEN@huggingface.co/spaces/Kartikey1234/image-filter-api main
