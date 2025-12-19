@@ -1,0 +1,25 @@
+
+# img_or=np.array(img)
+# smoothning=cv2.filter2D(img_or,-1,kernel)
+# mask_prob=mask_prob[...,None]
+# print(mask_prob.shape)
+# flitered_img=mask_prob*smoothning+(1-mask_prob)*img_or
+# def blurring():
+#     img_or=np.array(img)
+#     blurred_img=cv2.GaussianBlur(img_or, (15, 15), 0)
+#     mask_prob=mask_prob[...,None]
+#     print(mask_prob.shape)
+#     flitered_img=mask_prob*blurred_img+(1-mask_prob)*img_or
+#     return flitered_img
+# def smoothing():
+#     img_or=np.array(img)
+#     smoothning=cv2.filter2D(img_or,-1,kernel)
+#     mask_prob=mask_prob[...,None]
+#     print(mask_prob.shape)
+#     flitered_img=mask_prob*smoothning+(1-mask_prob)*img_or
+#     return flitered_img
+
+# loadimage=processimage()
+# plt.imshow(loadimage/255.0)
+# plt.axis("off")
+# plt.show()

@@ -1,0 +1,9 @@
+# Node modules
+webside/node_modules/
+
+# Python virtual environment
+filterproj/Lib/
+filterproj/Scripts/
+*.pyc
+__pycache__/
+temp/

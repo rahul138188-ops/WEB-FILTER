@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Filter App</title>
+</head>
+<link rel="stylesheet" href="style.css">
+<body>
+    <input id="check" type="file">
+    <div>
+        <!-- Filters with intensity sliders -->
+        <div class="filter-row">
+            <label>Blurring:</label>
+            <input type="checkbox" class="item" value="Blurring">
+            <input type="range" min="0" max="100" value="0" class="slider" id="BlurringSlider">
+            <span id="BlurringVal">0%</span>
+        </div>
+        <div class="filter-row">
+            <label>Sharpen:</label>
+            <input type="checkbox" class="item" value="Sharpen">
+            <input type="range" min="0" max="100" value="0" class="slider" id="SharpenSlider">
+            <span id="SharpenVal">0%</span>
+        </div>
+        <div class="filter-row">
+            <label>Brightness:</label>
+            <input type="checkbox" class="item" value="Brightness">
+            <input type="range" min="0" max="100" value="0" class="slider" id="BrightnessSlider">
+            <span id="BrightnessVal">0%</span>
+        </div>
+        <div class="filter-row">
+            <label>Noise addition:</label>
+            <input type="checkbox" class="item" value="Noiseaddition">
+            <input type="range" min="0" max="100" value="0" class="slider" id="NoiseadditionSlider">
+            <span id="NoiseadditionVal">0%</span>
+        </div>
+        <div class="filter-row">
+            <label>Noise reduction:</label>
+            <input type="checkbox" class="item" value="Noisereduction">
+            <input type="range" min="0" max="100" value="0" class="slider" id="NoisereductionSlider">
+            <span id="NoisereductionVal">0%</span>
+        </div>
+
+        <!-- Filters without intensity -->
+        <div class="filter-row"><label><input type="checkbox" class="item" value="EdgeDetect">Edge Detect</label></div>
+        <div class="filter-row"><label><input type="checkbox" class="item" value="Segmentation">Segmentation</label></div>
+        <div class="filter-row"><label><input type="checkbox" class="item" value="Cartoon">Cartoon</label></div>
+        <div class="filter-row" id="cartoon-options" style="display:none;">
+    <label>Choose Cartoon:</label><br>
+    <img src="Cartoon1.jpg" class="image cartoon" data-name="Cartoon1.jpg">
+    <img src="Cartoon2.jpg" class="image cartoon" data-name="Cartoon2.jpg">
+    <img src="Cartoon3.jpg" class="image cartoon" data-name="Cartoon3.jpg">
+    <div class="filter-row">
+    <label>Upload Your Cartoon:</label>
+    <input type="file" id="customCartoon" accept="image/*">
+    </div>
+
+</div>
+        <div class="filter-row"><label><input type="checkbox" class="item" value="Backgroundblur">Background blur</label></div>
+        <div class="filter-row"><label><input type="checkbox" class="item" value="changeBackground">Change Background</label></div>
+        <div class="filter-row" id="background-options" style="display:none;">
+    <label>Choose Background:</label><br>
+    <img src="background1.jpg" class="image background" data-name="background1.jpg">
+    <img src="background2.jpg" class="image background" data-name="background2.jpg">
+    <img src="background3.jpg" class="image background" data-name="background3.jpg">
+    <div class="filter-row">
+    <label>Upload Your Background:</label>
+    <input type="file" id="customBackground" accept="image/*">
+</div>
+
+</div>
+        <div class="filter-row"><label><input type="checkbox" class="item" value="glareremoval">Glare Removal</label></div>
+    </div>
+    <button id="butt">Get Image</button>
+    <div class="output-preview">
+    <img id="image" src="" alt="Processed Output">
+
+    <button id="downloadBtn" title="Download Image">
+        ⬇ Download
+    </button>
+</div>
+
+
+   <script>
+let selectedCartoon = "";
+let selectedBackground = "";
+let customCartoonFile = null;
+let customBackgroundFile = null;
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    /* Slider values */
+    document.querySelectorAll('.slider').forEach(slider => {
+        slider.addEventListener('input', () => {
+            document.getElementById(
+                slider.id.replace('Slider','Val')
+            ).innerText = slider.value + '%';
+        });
+    });
+  
+    /* SHOW CARTOON OPTIONS */
+    document.querySelector('input[value="Cartoon"]')
+        .addEventListener("change", e => {
+            document.getElementById("cartoon-options").style.display =
+                e.target.checked ? "block" : "none";
+        });
+
+    /* SHOW BACKGROUND OPTIONS ✅ FIXED */
+    document.querySelector('input[value="changeBackground"]')
+        .addEventListener("change", e => {
+            document.getElementById("background-options").style.display =
+                e.target.checked ? "block" : "none";
+        });
+
+  // Cartoon images
+document.querySelectorAll(".cartoon").forEach(img => {
+    img.addEventListener("click", () => {
+        if (img.classList.contains("selected")) {
+            // If already selected, deselect
+            img.classList.remove("selected");
+            selectedCartoon = "";
+        } else {
+            // Deselect all first
+            document.querySelectorAll(".cartoon").forEach(i => i.classList.remove("selected"));
+            img.classList.add("selected");
+            selectedCartoon = img.dataset.name;
+        }
+        console.log("Cartoon:", selectedCartoon);
+    });
+});
+
+// Background images
+document.querySelectorAll(".background").forEach(img => {
+    img.addEventListener("click", () => {
+        if (img.classList.contains("selected")) {
+            img.classList.remove("selected");
+            selectedBackground = "";
+        } else {
+            document.querySelectorAll(".background").forEach(i => i.classList.remove("selected"));
+            img.classList.add("selected");
+            selectedBackground = img.dataset.name;
+        }
+        console.log("Background:", selectedBackground);
+    });
+});
+
+
+   
+});
+const imageEl = document.getElementById("image");
+const downloadBtn = document.getElementById("downloadBtn");
+
+/* Show download button when image loads */
+imageEl.addEventListener("load", () => {
+    if (imageEl.src) {
+        downloadBtn.style.display = "inline-block";
+    }
+});
+
+/* Download image */
+downloadBtn.addEventListener("click", () => {
+    const link = document.createElement("a");
+    link.href = imageEl.src;
+    link.download = "filtered_image.png";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+});
+/* APPLY BUTTON */
+// Make entire filter-row clickable to toggle its checkbox
+// Make entire filter-row clickable to toggle checkbox and handle slider
+document.getElementById("customCartoon").addEventListener("change", e => {
+    customCartoonFile = e.target.files[0];
+    selectedCartoon = ""; // disable preset if custom selected
+
+    // Remove red selection from preset cartoons
+    document.querySelectorAll(".cartoon")
+        .forEach(i => i.classList.remove("selected"));
+});
+
+document.getElementById("customBackground").addEventListener("change", e => {
+    customBackgroundFile = e.target.files[0];
+    selectedBackground = ""; // disable preset if custom selected
+
+    // Remove red selection from preset backgrounds
+    document.querySelectorAll(".background")
+        .forEach(i => i.classList.remove("selected"));
+});
+// Send custom files if present
+
+document.querySelectorAll(".filter-row").forEach(row => {
+    const checkbox = row.querySelector("input[type='checkbox'].item");
+    const slider = row.querySelector("input[type='range']");
+
+    if (checkbox) {
+        row.addEventListener("click", e => {
+            // Ignore clicks on the slider itself
+            if (e.target === slider) return;
+
+            // Toggle checkbox
+            checkbox.checked = !checkbox.checked;
+            checkbox.dispatchEvent(new Event('change')); // triggers your existing logic for cartoon/background
+
+            // Handle slider value without interfering with your slider input listener
+            if (slider) {
+                slider.value = checkbox.checked ? (slider.value > 0 ? slider.value : 50) : 0;
+
+                // Update displayed value
+                const valSpan = document.getElementById(slider.id.replace('Slider','Val'));
+                if (valSpan) valSpan.innerText = slider.value + '%';
+            }
+        });
+    }
+});
+
+// Automatically check the checkbox when the slider is changed
+document.querySelectorAll(".filter-row").forEach(row => {
+    const checkbox = row.querySelector("input[type='checkbox'].item");
+    const slider = row.querySelector("input[type='range']");
+
+    if (checkbox && slider) {
+        slider.addEventListener("input", () => {
+            if (!checkbox.checked) {
+                checkbox.checked = true;
+                checkbox.dispatchEvent(new Event('change'));
+
+                // Optional: set default slider value if it was 0
+                if (slider.value == 0) slider.value = 50;
+
+                const valSpan = document.getElementById(slider.id.replace('Slider','Val'));
+                if (valSpan) valSpan.innerText = slider.value + '%';
+            }
+        });
+    }
+});
+
+
+document.getElementById("butt").addEventListener("click", async () => {
+
+    const form = new FormData();
+    const file = document.getElementById("check").files[0];
+    form.append("file", file);
+
+    const operations = [];
+
+    document.querySelectorAll(".item").forEach(e => {
+        if (e.checked) {
+            const key = e.value.replace(/\s+/g, '');
+            const slider = document.getElementById(key + 'Slider');
+
+            if (slider) {
+                operations.push({
+                    name: key,
+                    intensity: slider.value / 100
+                });
+            } else {
+                operations.push({ name: key });
+            }
+        }
+    });
+    if (customCartoonFile) {
+    form.append("cartoon_file", customCartoonFile); // NEW FILE
+}
+
+if (customBackgroundFile) {
+    form.append("background_file", customBackgroundFile); // NEW FILE
+}
+    form.append("values", JSON.stringify(operations));
+    form.append("cartoon_name", selectedCartoon);
+    form.append("background_name", selectedBackground);
+    const response = await fetch("http://127.0.0.1:8000/filter", {
+        method: "POST",
+        body: form
+    });
+
+    const blob = await response.blob();
+    document.getElementById("image").src = URL.createObjectURL(blob);
+});
+</script>
+</body>
+</html>
